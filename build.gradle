@@ -1,19 +1,35 @@
+import java.nio.charset.Charset
+
 plugins {
     id 'java'
+    id 'application'
 }
 
 group = 'ru.ranepa'
 version = '1.0-SNAPSHOT'
 
-repositories {
-    mavenCentral()
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
+
+repositories { mavenCentral() }
 
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-test {
-    useJUnitPlatform()
+application { mainClass = 'ru.ranepa.airline.Main' }
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 21
+}
+test { useJUnitPlatform() }
+run {
+    standardInput = System.in
+    jvmArgs '-Dfile.encoding=UTF-8',
+            '-Dstdout.encoding=' + Charset.defaultCharset().name(),
+            '-Dstderr.encoding=' + Charset.defaultCharset().name()
 }
